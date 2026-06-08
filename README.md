@@ -1,10 +1,10 @@
-# 🚀 Galactic Trading Simulator
+# Galactic Trading Simulator
 
 A terminal-based, text-driven space trading simulation built entirely from scratch in modern C++. Command your own starship, navigate a dynamic galaxy with shifting planetary markets, manage crucial resources, purchase goods, and amass a fortune across the stars before running out of fuel or credits.
 
 This project demonstrates foundational software engineering principles including Object-Oriented Programming (OOP), strict data encapsulation, explicit multi-file architecture separation (.h / .cpp configurations), and structural memory management.
 
-## 🌌 Core Features
+## Core Features
 
 - **Dynamic Planetary Economies**: Visit 5 unique planets (Tatooine, Coruscant, Hoth, Endor, Naboo), each featuring an isolated commodity pricing matrix for core resources (Iron, Water, Fuel).
 
@@ -14,7 +14,7 @@ This project demonstrates foundational software engineering principles including
 
 - **Data Encapsulation**: System architectures are strictly guarded using private scopes, preventing variable shadowing and unauthorized external manipulation, exposing values safely through clean getter methods.
 
-## 🛠️ File Architecture
+## File Architecture
 
 The project avoids a "spaghetti nebula" anti-pattern by splitting concerns into dedicated header and source files:
 
@@ -30,7 +30,7 @@ GalacticTrader/
 └── Planet.cpp        # Randomized price generators and display interfaces
 ```
 
-## 🎮 Gameplay Loop
+## Gameplay Loop
 
 1. **Initialization**: Define your captain's name. The game instantiates the sector array, preparing default constructors before applying dynamic profiles.
 
@@ -40,7 +40,7 @@ GalacticTrader/
 
 4. **Fleet Upgrades**: Reinvest revenue from trade loops to expand storage and optimize hardware systems.
 
-## 💻 Getting Started
+## Getting Started
 
 ### Prerequisites
 You will need a working C++ compiler supporting at least C++11 or higher (e.g., g++, clang, or MSVC).
@@ -59,12 +59,12 @@ Launch the compiled simulation binary executable:
 ./GalacticTrader
 ```
 
-## 🗺️ Project Roadmap
+## Project Roadmap
 
 - [x] **Stage 1 (Foundation)**: Structural multi-file alignment, class design configurations, and loop architectures.
 - [x] **Stage 2 (Economy)**: Private resource arrays, automated randomized distributions, and capsule access validation.
 - [ ] **Stage 3 (Upgrades)**: Implement a dedicated Ship class utilizing classic object inheritance (CargoShip vs. ExplorerShip variants).
 - [ ] **Stage 4 (Persistence)**: Serialization mechanics for global save profiles via fstream alongside random encounter matrix events (Pirate raids, cosmic storms).
 
-## 📄 License
+## License
 This repository is open-source and available under the MIT License. Feel free to clone, modify, and expand upon the code to construct your own custom space modules!
