@@ -15,4 +15,4 @@ class Planet{
         int get_prices(int i);
         void randomise_prices();
         void display_stats();
-};
+}

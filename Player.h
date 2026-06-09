@@ -24,4 +24,4 @@ class Player {
 
         void display_stats();
 
-};
+}

@@ -13,7 +13,7 @@ Planet::Planet(){
     prices[1] = 0;
     prices[2] = 0;
 
-};
+}
 
 Planet::Planet(std::string name){
     this->name = name;
@@ -21,11 +21,12 @@ Planet::Planet(std::string name){
     prices[1] = 0;
     prices[2] = 0;
 
-};
+    randomise_prices()
+}
 
 int Planet::get_prices(int i){
     return prices[i];
-};
+}
 
 // Function to randomie prices
 void Planet::randomise_prices(){
@@ -39,10 +40,10 @@ void Planet::randomise_prices(){
     prices[0] = iron_dist(engine);
     prices[1] = water_dist(engine);
     prices[2] = fuel_dist(engine);
-};
+}
 
 void Planet::display_stats(){
     std::cout << "Iron price: " << prices[0] << std::endl;
     std::cout << "Water price: " << prices[1] << std::endl;
     std::cout << "Fuel price: " << prices[2] << std::endl;
-};
+}
