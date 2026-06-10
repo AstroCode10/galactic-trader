@@ -4,7 +4,7 @@
 #include <random>
 #include "Planet.h"
 
-
+// Default Planet constructor with runs when Game object is first created
 Planet::Planet(){
     name = "Unknown";
 
@@ -15,6 +15,7 @@ Planet::Planet(){
 
 }
 
+// Planet constructor
 Planet::Planet(std::string name){
     this->name = name;
     prices[0] = 0;
@@ -24,11 +25,12 @@ Planet::Planet(std::string name){
     randomise_prices()
 }
 
+// Getter to return price of resource
 int Planet::get_prices(int i){
     return prices[i];
 }
 
-// Function to randomie prices
+// Procedure to randomise prices
 void Planet::randomise_prices(){
     std::random_device rd;
     std::mt19937 engine(rd());
@@ -42,8 +44,9 @@ void Planet::randomise_prices(){
     prices[2] = fuel_dist(engine);
 }
 
+// Procedure showing planets' resource prices (iron, water, fuel)
 void Planet::display_stats(){
-    std::cout << "Iron price: " << prices[0] << std::endl;
-    std::cout << "Water price: " << prices[1] << std::endl;
-    std::cout << "Fuel price: " << prices[2] << std::endl;
+    std::cout << "1. Iron price: " << prices[0] << std::endl;
+    std::cout << "2. Water price: " << prices[1] << std::endl;
+    std::cout << "3. Fuel price: " << prices[2] << std::endl;
 }
