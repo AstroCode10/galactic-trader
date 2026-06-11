@@ -46,13 +46,14 @@ void Game::run(){
         market_menu(user_choice);
     }
 
-    std::cout << "Thank you for playing with us!";
-
+    std::cout << "Thank you for playing with us!" << std::endl;
 }
 
 // Procedure to initialise game
 void Game::initialise(){
     std::string player_name;
+    curr_planet_idx = 0; 
+    BASE_FUEL_COST = 15;
 
     planets[0] = Planet("Tatooine");
     planets[1] = Planet("Coruscant");
@@ -63,7 +64,7 @@ void Game::initialise(){
     std::cout << "Enter player name: ";
     std::getline(std::cin, player_name);
     player = Player(player_name);
-};
+}
 
 // Function to show market menu
 void Game::market_menu(int choice){
@@ -71,10 +72,10 @@ void Game::market_menu(int choice){
     int number;
     int cost;
     int market_action;
-    bool show_market = true;;
+    bool show_market = true;
 
     do {
-        std::cout << "=== Welcome to the " << planets[choice].name << " Market ===" << std::endl;
+        std::cout << "\n=== Welcome to the " << planets[choice].name << " Market ===" << std::endl;
         planets[choice].display_stats();
         std::cout << "=================================" << std::endl;
         std::cout << "1. Buy Resources" << std::endl;
@@ -87,55 +88,73 @@ void Game::market_menu(int choice){
             // Buying cargo
             case 1: {
                 do {
-                    std::cout << "-- Buy Cargo ---" << std::endl;
+                    std::cout << "--- Buy Cargo ---" << std::endl;
                     std::cout << "1. Buy Iron (You have: " << player.get_inventory(0) << ")" << std::endl;
                     std::cout << "2. Buy Water (You have: " << player.get_inventory(1) << ")" << std::endl;
                     std::cout << "3. Buy Fuel (You have: " << player.get_fuel() << ")" << std::endl;
                     std::cout << "4. Cancel" << std::endl;
-
+                    std::cout << "Enter your choice: ";
                     std::cin >> resource_choice;
 
                     if (resource_choice < 1 || resource_choice > 4){
-                    std::cout << "Please enter a valid choice (1 - 4)" << std::endl; 
+                        std::cout << "Please enter a valid choice (1 - 4)" << std::endl; 
                     }
 
                 } while (resource_choice < 1 || resource_choice > 4);
                 
                 if (resource_choice != 4){
                     do {
-                        std::cout << "How many units would you like to buy? " << std::endl;
+                        std::cout << "How many units would you like to buy? ";
                         std::cin >> number;
                         cost = number * planets[choice].get_prices(resource_choice-1);
 
+                        // Check 1: Financial Balance
                         if (cost > player.get_credits()){
                             std::cout << "Sorry you cannot make the purchase" << std::endl;
-                            std::cout << "Total cost of " << cost << " Star Coins 
-                            is greater than your balance of "
-                            << player.get_credits() << " Star Coins" << std::endl;
-                            std::cout << "Please try again" << std::endl;
+                            std::cout << "Total cost of " << cost << " Star Coins is greater than your balance of "
+                                    << player.get_credits() << " Star Coins" << std::endl;
+                            std::cout << "Please try again\n" << std::endl;
+                        }
+                        /* Check 2: Physical Cargo Limits 
+                        (SAFEGUARD: Only runs if they are NOT buying fuel!) */
+
+                        else if (resource_choice != 3 &&
+                            (player.get_total_item_num() + number > ship.get_max_cargo())) {
+                            std::cout << "Ship's cargo limit is: " << ship.get_max_cargo() << std::endl;
+                            std::cout << "You already have " << player.get_total_item_num()
+                            << " in your inventory." << std::endl;
+                            std::cout << "Cannot buy " << number << " more units. Please try again."
+                            << std::endl << std::endl; 
+                        }
+                        else {
+                            break;
                         }
 
-                    } while (cost > player.get_credits());
+                    // Loop runs again if either error state is met (ignoring cargo check for fuel purchases)
+                    } while (cost > player.get_credits() || 
+                        (resource_choice != 3 &&
+                            (player.get_total_item_num() + number > ship.get_max_cargo())));
 
                     player.remove_credits(cost);
                     std::cout << "Payment of " << cost << " Star Coins successful!" << std::endl;
 
                     if (resource_choice == 3){
                         player.add_fuel(number);
+                    } else {
+                        player.add_item(resource_choice-1, number);
                     }
                 }
                 break;
-            }
+            } 
 
             // Selling cargo
             case 2: {
-                    std::cout << "-- Sell Cargo ---" << std::endl;
+                do {
+                    std::cout << "\n--- Sell Cargo ---" << std::endl;
                     std::cout << "1. Sell Iron (You have: " << player.get_inventory(0) << ")" << std::endl;
                     std::cout << "2. Sell Water (You have: " << player.get_inventory(1) << ")" << std::endl;
                     std::cout << "3. Cancel" << std::endl;
-
-                do {
-                    std::cout << "Enter your choice:  ";
+                    std::cout << "Enter your choice: ";
                     std::cin >> resource_choice;
                     
                     if (resource_choice < 1 || resource_choice > 3) {
@@ -144,26 +163,27 @@ void Game::market_menu(int choice){
 
                 } while (resource_choice < 1 || resource_choice > 3);
 
-                do {
-                    std::cout << "How many units would you like to sell? " << std::endl;
-                    std::cin >> number;
+                if (resource_choice != 3) {
+                    do {
+                        std::cout << "How many units would you like to sell? ";
+                        std::cin >> number;
 
-                    if (inventory.get_inventory(resource_choice-1) < number){
-                        std::cout << "Not enough units in inventory." << std::endl;
-                        std::cout << "Only " << inventory.get_inventory(resource_choice-1) <<
-                        " in inventory." << std::endl;
-                    }
+                        // FIXED: Adjusted to reference player object data directly
+                        if (player.get_inventory(resource_choice-1) < number){
+                            std::cout << "Not enough units in inventory." << std::endl;
+                            std::cout << "Only " << player.get_inventory(resource_choice-1) << " in inventory.\n" << std::endl;
+                        }
+                        else {
+                            // FIXED: Fixed parentheses syntax and changed variables to local matching ones
+                            cost = number * planets[choice].get_prices(resource_choice-1);
+                            player.remove_item(resource_choice-1, number);
+                            player.add_credits(cost);
 
-                    else {
-                        cost = number * planets[choice].get_prices[resource_choice-1];
-                        player.remove_item(resource_choice-1, number);
-                        player.add_credits(cost);
+                            std::cout << "Sold " << number << " units for " << cost << " Star Coins!" << std::endl;
+                        }
 
-                        std::cout << "Sold " << qty_to_sell << " units for " << earnings << " Star Coins!" << std::endl;
-                    }
-
-                } while (inventory.get_inventory(resource_choice-1) < number);
-
+                    } while (player.get_inventory(resource_choice-1) < number);
+                }
                 break;
             }
 
@@ -173,25 +193,26 @@ void Game::market_menu(int choice){
                 break;
                 
             default:
-                std::cout << "Please enter a valid action (1 - 3)"
+                std::cout << "Please enter a valid action (1 - 3)" << std::endl;
+                break;
         }
-    } (while show_market && (market_action < 1 || market_action > 3));
 
+    } while (show_market);
 }
 
 // Procedure to show travel menu
 int Game::travel_menu(){
     int choice;
     
-    std::cout << "Explorable Planets: " << std::endl;
-    for(int i = 0; i < sizeof(planets)/sizeof(planets[0]); i++){
+    std::cout << "\nExplorable Planets: " << std::endl;
+    for(int i = 0; i < 5; i++){
         std::cout << i+1 << ". " << planets[i].name << std::endl;
     }
 
     std::cout << "6. Quit Game" << std::endl;
 
     do{
-        std::cout << "Where would you like to travel to? (1 - 5): ";
+        std::cout << "Where would you like to travel to? (1 - 6): ";
         std::cin >> choice;
 
         if(choice < 1 || choice > 6){

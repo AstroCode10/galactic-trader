@@ -36,6 +36,15 @@ int Player::get_item(int idx){
     return inventory[idx];
 }
 
+// Getter to return amount of an item remaining
+int Player::get_total_item_num(){
+    int count = 0;
+    for (int i; i < sizeof(inventory)/sizeof(inventory[0]); i++) {
+        count ++
+    }
+    return count;
+}
+
 // Setter to deduct credits
 void Player::remove_credits(int amount){
     credits -= amount;
@@ -57,12 +66,12 @@ void Player::add_fuel(int amount){
 }
 
 // Setter to deduct quantity of an item
-void remove_item(int idx, int amount){
+void Player::remove_item(int idx, int amount){
     inventory[idx] -= amount;
 }
 
 // Setter to increase quantity of an item
-void add_item(int idx, int amount){
+void Player::add_item(int idx, int amount){
     inventory[idx] += amount;
 }
 

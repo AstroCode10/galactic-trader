@@ -1,5 +1,6 @@
 // Player.h
 
+#pragma once
 #include <iostream>
 
 class Player {
@@ -17,6 +18,7 @@ class Player {
         int get_credits();
         int get_fuel();
         int get_item(int idx);
+        int get_total_item_num();
 
         void remove_credits(int amount);
         void add_credits(int amount);
@@ -29,4 +31,4 @@ class Player {
 
         void display_stats();
 
-}
+};

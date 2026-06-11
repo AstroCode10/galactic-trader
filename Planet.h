@@ -1,5 +1,6 @@
 // Planet.h
 
+#pragma once
 #include <iostream>
 
 class Planet{
@@ -15,4 +16,4 @@ class Planet{
         int get_prices(int i);
         void randomise_prices();
         void display_stats();
-}
+};
