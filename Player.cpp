@@ -12,6 +12,11 @@ Player::Player(){
     // Iron, Water
     inventory [0] = 0;
     inventory [1] = 0;
+    
+    // Registry of ships bought or not
+    ship_registry["Rusty Scout"] = true;
+    ship_registry["Cargo Hauler"] = false;
+    ship_registry["Falcon Scout"] = false;
 }
 
 // Player constructor
@@ -19,6 +24,15 @@ Player::Player(std::string name){
     this->name = name;
     credits = 1000;
     fuel = 100;
+
+    // Iron, Water
+    inventory [0] = 0;
+    inventory [1] = 0;
+
+    // Registry of ships bought or not
+    ship_registry["Rusty Scout"] = true;
+    ship_registry["Cargo Hauler"] = false;
+    shipregistry["Falcon Scout"] = false;
 }
 
 // Getter to return credits
@@ -39,11 +53,17 @@ int Player::get_item(int idx){
 // Getter to return amount of an item remaining
 int Player::get_total_item_num(){
     int count = 0;
-    for (int i; i < sizeof(inventory)/sizeof(inventory[0]); i++) {
-        count ++
+    for (int i = 0; i < sizeof(inventory)/sizeof(inventory[0]); i++) {
+        count ++;
     }
     return count;
 }
+
+// Getter to return status of whether ship was bought or not
+bool get_ship_status(std::string key){
+    return ship_registry[key];
+}
+
 
 // Setter to deduct credits
 void Player::remove_credits(int amount){
@@ -77,8 +97,11 @@ void Player::add_item(int idx, int amount){
 
 // Procedure showing player's resource quantity (credits, fuel, iron, water)
 void Player::display_stats(){
-    std::cout << name << "'s credits: " << credits << std::endl;
-    std::cout << name << "'s fuel: " << fuel << std::endl;
-    std::cout << name << "'s iron: " << inventory[0] << " units" << std::endl;
-    std::cout << name << "'s water: " << inventory[1] << " units" << std::endl;
+    std::cout << "\n=== " << name << "'s Status ===" << std::endl;
+    std::cout << "Credits: " << credits << " Star Coins" << std::endl;
+    std::cout << "Fuel Tank: " << fuel << " units" << std::endl;
+    std::cout << "Cargo Hold: " << get_total_item_num() << " units loaded" << std::endl;
+    std::cout << "  - Iron: " << inventory[0] << " units" << std::endl;
+    std::cout << "  - Water: " << inventory[1] << " units" << std::endl;
+    std::cout << "==========================" << std::endl;
 }

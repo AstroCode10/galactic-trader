@@ -11,7 +11,14 @@ void Game::run(){
     bool running = true;
     initialise();
 
-    while(player.get_credits() > 0 && running){
+    while(running){
+        if(player.get_credits() == 0 && player.get_total_item_num() == 0 && player.get_fuel() == 0){
+            std::cout << "--- GAME OVER ---" << std::endl;
+            std::cout << "You are stranded in the dark void of space with 0 credits, no cargo, and an empty fuel tank." << std::endl;
+            running = false;
+            break;
+        }
+
         player.display_stats();
         user_choice = travel_menu();
         if (user_choice == 5) {
@@ -28,8 +35,8 @@ void Game::run(){
         fuel_cost = BASE_FUEL_COST * std::abs(user_choice - curr_planet_idx);
 
         if (fuel_cost > player.get_fuel()){
-            std::cout << "Insufficient fuel! Hyperspace Jump requires: " << fuel_cost << std::endl;
-            std::cout << "Please buy more fuel or choose a closer location" << std::endl;
+            std::cout << "Insufficient fuel! Hyperspace Jump requires: " << fuel_cost << " units." << std::endl;
+            std::cout << "Please buy more fuel or choose a closer location." << std::endl;
             market_menu(curr_planet_idx);
             continue;
         }
@@ -45,8 +52,6 @@ void Game::run(){
         std::cout << "Arriving at " << planets[user_choice].name << "..." << std::endl << std::endl;
         market_menu(user_choice);
     }
-
-    std::cout << "Thank you for playing with us!" << std::endl;
 }
 
 // Procedure to initialise game
@@ -80,7 +85,9 @@ void Game::market_menu(int choice){
         std::cout << "=================================" << std::endl;
         std::cout << "1. Buy Resources" << std::endl;
         std::cout << "2. Sell Resources" << std::endl;
-        std::cout << "3. Exit Market" << std::endl;
+        std::cout << "3. View Shipyard" << std::endl;
+        std::cout << "4. Exit Market" << std::endl << std::endl;
+        
         std::cout << "Choose an action: ";
         std::cin >> market_action;
 
@@ -115,9 +122,9 @@ void Game::market_menu(int choice){
                                     << player.get_credits() << " Star Coins" << std::endl;
                             std::cout << "Please try again\n" << std::endl;
                         }
+
                         /* Check 2: Physical Cargo Limits 
                         (SAFEGUARD: Only runs if they are NOT buying fuel!) */
-
                         else if (resource_choice != 3 &&
                             (player.get_total_item_num() + number > ship.get_max_cargo())) {
                             std::cout << "Ship's cargo limit is: " << ship.get_max_cargo() << std::endl;
@@ -126,15 +133,30 @@ void Game::market_menu(int choice){
                             std::cout << "Cannot buy " << number << " more units. Please try again."
                             << std::endl << std::endl; 
                         }
+
+                        /* Check 3: Fuel Capacity Limits 
+                        (SAFEGUARD: Only runs if they ARE buying fuel!) */
+                        else if (resource_choice == 3 &&
+                            (player.get_fuel() + number > ship.get_max_fuel())) {
+                            std::cout << "Ship's fuel capacity is: " << ship.get_max_fuel() << std::endl;
+                            std::cout << "You already have " << player.get_fuel()
+                            << " in your inventory." << std::endl;
+                            std::cout << "Cannot buy " << number << " more gallons of fuel. Please try again."
+                            << std::endl << std::endl; 
+                        }
+
                         else {
                             break;
                         }
 
-                    // Loop runs again if either error state is met (ignoring cargo check for fuel purchases)
+                    // Loop runs again if either error state is met
                     } while (cost > player.get_credits() || 
                         (resource_choice != 3 &&
-                            (player.get_total_item_num() + number > ship.get_max_cargo())));
+                        (player.get_total_item_num() + number > ship.get_max_cargo())) ||
+                        (resource_choice == 3 &&
+                        (player.get_fuel() + number > ship.get_max_fuel())));
 
+                    // Processing payment after an appropriate number of units are chosen
                     player.remove_credits(cost);
                     std::cout << "Payment of " << cost << " Star Coins successful!" << std::endl;
 
@@ -168,27 +190,31 @@ void Game::market_menu(int choice){
                         std::cout << "How many units would you like to sell? ";
                         std::cin >> number;
 
-                        // FIXED: Adjusted to reference player object data directly
                         if (player.get_inventory(resource_choice-1) < number){
                             std::cout << "Not enough units in inventory." << std::endl;
                             std::cout << "Only " << player.get_inventory(resource_choice-1) << " in inventory.\n" << std::endl;
                         }
                         else {
-                            // FIXED: Fixed parentheses syntax and changed variables to local matching ones
                             cost = number * planets[choice].get_prices(resource_choice-1);
                             player.remove_item(resource_choice-1, number);
                             player.add_credits(cost);
 
-                            std::cout << "Sold " << number << " units for " << cost << " Star Coins!" << std::endl;
+                            std::cout << "Sold " << number << " units for " << cost
+                            << " Star Coins!" << std::endl;
                         }
 
                     } while (player.get_inventory(resource_choice-1) < number);
                 }
                 break;
             }
+            
+            // Showing shipyard
+            case 3:
+                shipyard.show_shipyard_menu(player, ship);
+                break;
 
             // Exiting market menu
-            case 3:
+            case 4:
                 show_market = false;
                 break;
                 
