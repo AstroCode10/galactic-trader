@@ -10,6 +10,16 @@ Shipyard::Shipyard() {
     catalog["Falcon Scout"] = {250, 15, 600};
 }
 
+Ship Shipyard::get_ship_blueprint(std::string ship_name){
+    if (catalog.find(ship_name) != catalog.end()){
+        ShipSpecs specs = catalog[ship_name];
+        return Ship(ship_name, specs.max_fuel, specs.max_cargo);
+    }
+
+    ShipSpecs default_specs = catalog["Rusty Scout"];
+    return Ship("Rusty Scout", default_specs.max_fuel, default_specs.max_cargo);
+}
+
 void Shipyard::show_shipyard_menu(Player &player, Ship &curr_ship) {
     int choice;
     bool running = true;
@@ -53,6 +63,7 @@ void Shipyard::show_shipyard_menu(Player &player, Ship &curr_ship) {
         else {
             std::string target_name = directory[choice - 1];
             ShipSpecs target_specs = catalog[target_name];
+            const unordered_map<std::string, bool> &registry = player.get_registry()
 
             // Running transaction validations
             
@@ -62,7 +73,7 @@ void Shipyard::show_shipyard_menu(Player &player, Ship &curr_ship) {
             }
 
             // Check B: If they don't own it yet, can they afford it?
-            else if (!player.get_ship_status(target_name) && player.get_credits() < target_specs.cost) {
+            else if (!registry[target_name] && player.get_credits() < target_specs.cost) {
                 std::cout << "Transaction Denied: Insufficient Star Coins." << std::endl;
                 std::cout << "Cost: " << target_specs.cost << " | Your Balance: "
                 << player.get_credits() << std::endl;
@@ -78,7 +89,7 @@ void Shipyard::show_shipyard_menu(Player &player, Ship &curr_ship) {
 
             // Processing the purchase/swap if all checks passed
             else {
-                if (!player.get_ship_status(target_name)) {
+                if (!registry[target_name]) {
                     player.remove_credits(target_specs.cost);
                     player.unlock_ship(target_name); 
                     std::cout << "Purchased a license for the " << target_name << "!" << std::endl;

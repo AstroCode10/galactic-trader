@@ -1,10 +1,10 @@
-# 🚀 Galactic Trading Simulator
+# Galactic Trader Game
 
 A terminal-based, text-driven space trading simulation built entirely from scratch in modern C++. Command your own starship, navigate a dynamic galaxy with shifting planetary markets, manage crucial resources, purchase goods, and amass a fortune across the stars before running out of fuel or credits.
 
-This project demonstrates foundational software engineering principles including Object-Oriented Programming (OOP), strict data encapsulation, explicit multi-file architecture separation (.h / .cpp configurations), and high-performance data structures.
+This project demonstrates foundational software engineering principles including Object-Oriented Programming (OOP), strict data encapsulation, explicit multi-file architecture separation (.h / .cpp configurations), high-performance data structures, and advanced data serialization frameworks.
 
-## 🌌 Core Features
+## Core Features
 
 - **Dynamic Planetary Economies**: Visit 5 unique planets (Tatooine, Coruscant, Hoth, Endor, Naboo), each featuring an isolated commodity pricing matrix for core resources (Iron, Water, Fuel).
 
@@ -16,7 +16,9 @@ This project demonstrates foundational software engineering principles including
 
 - **Resource & Hull Validation Matrix**: Travel mechanics track financial balances, cargo load constraints, and fuel line safeguards dynamically. Swapping hulls automatically ensures existing cargo fits the new platform and siphons off overflowing fuel tanks.
 
-## 🛠️ File Architecture
+- **Dynamic Loop Serialization & Safe File I/O**: Implements an infinitely scalable persistence model via `<fstream>`. The file pipeline records baseline parameters and iterates dynamically through the fleet license registration arrays. Custom parsing tracks variable lengths cleanly using explicit string-tokenizing logic separated by targeted delimiters (`,`), guarded by structural validation stream handlers.
+
+## File Architecture
 
 The project maintains a strict separation of concerns, isolating entity data profiles from economic transactional logic loop cycles:
 
@@ -36,9 +38,9 @@ GalacticTrader/
 └── Shipyard.cpp      # Catalog parsing, currency transaction checks, and hull swaps
 ```
 
-## 🎮 Gameplay Loop
+## Gameplay Loop
 
-1. **Initialization**: Define your captain's name. The game instantiates the player, defaults the starter ship configuration, and populates the cosmic marketplace.
+1. **Initialization / Session Restoration**: Upon runtime, the subsystem queries the disk directory for an existing save state configuration. If missing, the game falls back into standard primary sequence triggers. If localized files parse successfully, variables instantly overwrite baseline objects and map out the current planet environment.
 
 2. **Hyperspace Navigation**: Choose an explorable location from the navigation menu. Space coordinates compute relative distances dynamically, extracting precise fuel requirements against active ship capacities.
 
@@ -46,9 +48,9 @@ GalacticTrader/
 
 4. **Fleet Engineering**: Visit local drydocks to upgrade your hull class. The game verifies transaction feasibility, adjusts cargo transfer weight rules, updates permanent flight ownership licenses, and swaps physical object payloads instantly via reference tracking.
 
-5. **Survival & Victory Parameters**: Maintain active trade loops to avoid total economic insolvency. Running completely out of operational capital, fuel reserves, and cargo arrays triggers a definitive terminal soft-lock game-over loop.
+5. **Survival, Volatility, & Termination**: Players must carefully optimize cargo margins. Encountering total economic insolvency (0 Star Coins, empty cargo bays, and 0 operational fuel) triggers an explicit game-over loop termination step. Exiting through standard menu routes safely serializes live states to file before closing memory stacks.
 
-## 💻 Getting Started
+## Getting Started
 
 ### Prerequisites
 You will need a working C++ compiler supporting at least C++11 or higher (e.g., g++, clang, or MSVC).
@@ -67,12 +69,13 @@ Launch the compiled simulation binary executable:
 ./GalacticTrader
 ```
 
-## 🗺️ Project Roadmap
+## Project Roadmap
 
 - [x] **Stage 1 (Foundation)**: Structural multi-file alignment, class design configurations, and loop architectures.
 - [x] **Stage 2 (Economy)**: Private resource arrays, automated randomized distributions, and capsule access validation.
 - [x] **Stage 3 (Upgrades)**: Implement a dedicated Shipyard system utilizing custom spec structures, hash map registries, and pass-by-reference object transformation mechanics.
-- [ ] **Stage 4 (Persistence & Threat Matrices)**: Serialization mechanics for global save profiles via fstream alongside random encounter matrix events (Pirate raids, cosmic storms, hull breaches).
+- [x] **Stage 4 (Persistence Framework)**: Serializing complex standard maps dynamically, manual delimiter parsing, and stream buffer clearings.
+- [ ] **Stage 5 (Threat Matrices & Events)**: Mid-transit cosmic interceptors (Space pirates, debris salvage options, magnetic nebula leaches).
 
-## 📄 License
+## License
 This repository is open-source and available under the MIT License. Feel free to clone, modify, and expand upon the code to construct your own custom space modules!

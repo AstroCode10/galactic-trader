@@ -10,7 +10,7 @@ struct ShipSpecs {
     int max_fuel;
     int max_cargo;
     int cost;
-}
+};
 
 class Shipyard {
     private:
@@ -18,5 +18,6 @@ class Shipyard {
 
     public:
         Shipyard();
+        Ship get_ship_blueprint(std::string ship_name);
         void show_shipyard_menu(Player &player, Ship &curr_ship);
 }

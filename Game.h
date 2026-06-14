@@ -19,6 +19,9 @@ class Game{
         void initialise();
         void run();
 
+        void save_game();
+        bool load_game();
+
         void market_menu(int choice);
         int travel_menu();
 };

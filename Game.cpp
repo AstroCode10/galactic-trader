@@ -2,6 +2,8 @@
 
 #include "Game.h"
 #include <iostream>
+#include <fstream>
+#include <unordered_map>
 #include <cmath>
 
 // Procedure to run game
@@ -9,8 +11,17 @@ void Game::run(){
     int user_choice;
     int fuel_cost;
     bool running = true;
-    initialise();
 
+    // Initialising if the the save state doesn't load
+    if (!load_game()){
+        initialise();
+    }
+
+    else {
+        std::cout << "Resuming orbit around " << planets[curr_planet_idx].name << "..." << std::endl;
+        market_menu(curr_planet_idx); 
+    }
+   
     while(running){
         if(player.get_credits() == 0 && player.get_total_item_num() == 0 && player.get_fuel() == 0){
             std::cout << "--- GAME OVER ---" << std::endl;
@@ -21,7 +32,15 @@ void Game::run(){
 
         player.display_stats();
         user_choice = travel_menu();
-        if (user_choice == 5) {
+
+        if (user_choice == 6){
+            save_game();
+            continue;
+        }
+
+        if (user_choice == 7) {
+            save_game();
+            std::cout << "Exiting game..." << std::endl;
             running = false;
             break;
         }
@@ -69,6 +88,81 @@ void Game::initialise(){
     std::cout << "Enter player name: ";
     std::getline(std::cin, player_name);
     player = Player(player_name);
+}
+
+// Procedure to save game
+void save_game(){
+    std::ofstream save_file("save_file.txt");
+
+    if(!save_file.is_open()){
+        std::cout << "ERROR: Could not save file" << std::endl;
+        return;
+    }
+
+    // Saving data
+    save_file << player_name << std::endl;
+    save_file << player.get_credits() << std::endl;
+    save_file << player.get_fuel() << std::endl;
+    save_file << player.get_item(0) << std::endl;
+    save_file << player.get_item(1) << std::endl;
+    save_file << ship.get_type() << std::endl;
+    save_file << curr_planet_idx << std::endl;
+
+    const unordered_map<std::string, bool> &registry = player.get_registry();
+
+    save_file << registry.size() << std::endl;
+
+    // Saving status of ships (bought/not bought)
+    for(const auto &pair: registry){
+        save_file << pair.first << "," << pair.second << std::endl;
+    }
+
+    save_file.close();
+    std::cout << "Game progress saved successfully!" << std::endl;
+}
+
+bool load_game(){
+    std::ifstream saved_file("save_file.txt");
+
+    if(!saved_file.is_open()){
+        return false;
+    }
+
+    int saved_credits, saved_fuel, saved_iron, saved_water, saved_planet, n_ships;
+    std::string saved_name, saved_ship;
+
+    std::getline(saved_file >> std::ws, saved_name);
+    saved_file >> saved_credits >> saved_fuel >> saved_iron >> saved_water;
+    saved_file.ignore();
+
+    std::getline(saved_file, saved_ship);
+    saved_file >> saved_planet >> n_ships;
+
+    for (int i = 0; i < n_ships; i++){
+        bool is_owned;
+        std::string name;
+
+        std::getline(saved_file >> std::ws, name, ',');
+        saved_file >> is_owned;
+
+        if (is_owned){
+            player.unlock_ship(name);
+        }
+
+    }
+
+    player.set_name(saved_name);
+    player.set_fuel(saved_fuel);
+    player.set_credits(saved_credits);
+    player.set_item(0, saved_iron);
+    player.set_item(1, saved_water);
+    curr_planet_idx = saved_planet;
+    ship = shipyard.get_ship_blueprint(saved_ship);
+
+    std::cout << "Successfully loaded file! Welcome back, Captain " << saved_name << "!" << std::endl;
+
+    saved_file.close();
+    return true;
 }
 
 // Function to show market menu
@@ -235,17 +329,18 @@ int Game::travel_menu(){
         std::cout << i+1 << ". " << planets[i].name << std::endl;
     }
 
-    std::cout << "6. Quit Game" << std::endl;
+    std::cout << "6. Save Progress" << std::endl;
+    std::cout << "7. Quit Game" << std::endl;
 
     do{
-        std::cout << "Where would you like to travel to? (1 - 6): ";
+        std::cout << "Where would you like to travel to? (1 - 7): ";
         std::cin >> choice;
 
-        if(choice < 1 || choice > 6){
-            std::cout << "Please enter an option from (1 - 6)" << std::endl; 
+        if(choice < 1 || choice > 7){
+            std::cout << "Please enter an option from (1 - 7)" << std::endl; 
         }
 
-    } while(choice < 1 || choice > 6);
+    } while(choice < 1 || choice > 7);
 
     return choice - 1;
 }

@@ -2,6 +2,7 @@
 
 #include "Player.h"
 #include <iostream>
+#include <unordered_map>
 
 // Default Player constructor with runs when Game object is first created
 Player::Player(){
@@ -32,26 +33,26 @@ Player::Player(std::string name){
     // Registry of ships bought or not
     ship_registry["Rusty Scout"] = true;
     ship_registry["Cargo Hauler"] = false;
-    shipregistry["Falcon Scout"] = false;
+    ship_registry["Falcon Scout"] = false;
 }
 
 // Getter to return credits
-int Player::get_credits(){
+int Player::get_credits() const {
     return credits;
 }
 
 // Getter to return fuel
-int Player::get_fuel(){
+int Player::get_fuel() const {
     return fuel;
 }
 
 // Getter to return amount of an item remaining
-int Player::get_item(int idx){
+int Player::get_item(int idx) const {
     return inventory[idx];
 }
 
 // Getter to return amount of an item remaining
-int Player::get_total_item_num(){
+int Player::get_total_item_num() const {
     int count = 0;
     for (int i = 0; i < sizeof(inventory)/sizeof(inventory[0]); i++) {
         count ++;
@@ -60,8 +61,8 @@ int Player::get_total_item_num(){
 }
 
 // Getter to return status of whether ship was bought or not
-bool get_ship_status(std::string key){
-    return ship_registry[key];
+const unordered_map<std::string, bool> &get_registry() const{
+    return ship_registry;
 }
 
 
@@ -95,8 +96,13 @@ void Player::add_item(int idx, int amount){
     inventory[idx] += amount;
 }
 
+// Setter to change status of ship (owned/not owned)
+void Player::unlock_ship(std::string name){
+    ship_registry[name] = true; 
+}
+
 // Procedure showing player's resource quantity (credits, fuel, iron, water)
-void Player::display_stats(){
+void Player::display_stats() const {
     std::cout << "\n=== " << name << "'s Status ===" << std::endl;
     std::cout << "Credits: " << credits << " Star Coins" << std::endl;
     std::cout << "Fuel Tank: " << fuel << " units" << std::endl;
