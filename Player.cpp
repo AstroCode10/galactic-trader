@@ -78,7 +78,13 @@ void Player::add_credits(int amount){
 
 // Setter to deduct fuel
 void Player::remove_fuel(int amount){
-    fuel -= amount;
+    if (fuel - amount < 0){
+        fuel = 0;
+    }
+
+    else {
+        fuel -= amount;
+    }
 }
 
 // Setter to add fuel
@@ -88,7 +94,14 @@ void Player::add_fuel(int amount){
 
 // Setter to deduct quantity of an item
 void Player::remove_item(int idx, int amount){
-    inventory[idx] -= amount;
+    if (inventory[idx] - amount < 0){
+        inventory[idx] = 0;
+    }
+
+    else {
+        inventory[idx] -= amount;
+    }
+
 }
 
 // Setter to increase quantity of an item
