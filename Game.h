@@ -7,7 +7,7 @@
 #include "Ship.h"
 #include "Shipyard.h"
 
-class Game{
+class Game {
     private:
         Player player;
         Planet planets[5];
@@ -17,6 +17,8 @@ class Game{
         int BASE_FUEL_COST;
         int FLAT_TOLL;
         int DERELICT_FUEL;
+
+        void init_planets();
 
     public:
         void initialise();
@@ -29,7 +31,7 @@ class Game{
         int travel_menu();
 
         void check_random_encounter(std::mt19937 &eng);
-        void handle_debris();
+        void handle_debris(std::mt19937 &eng);
         void handle_solar_flare(std::mt19937 &eng);
         void handle_salvage(std::mt19937 &eng);
         void handle_pirate_event(std::mt19937 &eng);

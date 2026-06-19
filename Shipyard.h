@@ -3,6 +3,7 @@
 #pragma once
 #include <iostream>
 #include <unordered_map>
+#include <string>
 #include "Player.h"
 #include "Ship.h"
 
@@ -20,5 +21,5 @@ class Shipyard {
         Shipyard();
         Ship get_ship_blueprint(std::string ship_name);
         void show_shipyard_menu(Player &player, Ship &curr_ship);
-        void repair_ship(Ship &curr_ship);
-}
+        void repair_ship(Player &player, Ship &curr_ship);
+};

@@ -2,119 +2,111 @@
 
 #include "Player.h"
 #include <iostream>
-#include <unordered_map>
 
-// Default Player constructor with runs when Game object is first created
-Player::Player(){
+Player::Player() {
     name = "Player";
     credits = 1000;
     fuel = 100;
+    inventory[0] = 0;
+    inventory[1] = 0;
 
-    // Iron, Water
-    inventory [0] = 0;
-    inventory [1] = 0;
-    
-    // Registry of ships bought or not
     ship_registry["Rusty Scout"] = true;
     ship_registry["Cargo Hauler"] = false;
     ship_registry["Falcon Scout"] = false;
 }
 
-// Player constructor
-Player::Player(std::string name){
+Player::Player(std::string name) {
     this->name = name;
     credits = 1000;
     fuel = 100;
+    inventory[0] = 0;
+    inventory[1] = 0;
 
-    // Iron, Water
-    inventory [0] = 0;
-    inventory [1] = 0;
-
-    // Registry of ships bought or not
     ship_registry["Rusty Scout"] = true;
     ship_registry["Cargo Hauler"] = false;
     ship_registry["Falcon Scout"] = false;
 }
 
-// Getter to return credits
 int Player::get_credits() const {
     return credits;
 }
 
-// Getter to return fuel
 int Player::get_fuel() const {
     return fuel;
 }
 
-// Getter to return amount of an item remaining
 int Player::get_item(int idx) const {
     return inventory[idx];
 }
 
-// Getter to return amount of an item remaining
-int Player::get_total_item_num() const {
-    int count = 0;
-    for (int i = 0; i < sizeof(inventory)/sizeof(inventory[0]); i++) {
-        count ++;
-    }
-    return count;
+int Player::get_inventory(int idx) const {
+    return inventory[idx];
 }
 
-// Getter to return status of whether ship was bought or not
-const unordered_map<std::string, bool> &get_registry() const{
+int Player::get_total_item_num() const {
+    return inventory[0] + inventory[1];
+}
+
+const std::unordered_map<std::string, bool> &Player::get_registry() const {
     return ship_registry;
 }
 
-
-// Setter to deduct credits
-void Player::remove_credits(int amount){
+void Player::remove_credits(int amount) {
     credits -= amount;
 }
 
-// Setter to add credits
-void Player::add_credits(int amount){
+void Player::add_credits(int amount) {
     credits += amount;
 }
 
-// Setter to deduct fuel
-void Player::remove_fuel(int amount){
-    if (fuel - amount < 0){
+void Player::remove_fuel(int amount) {
+    if (fuel - amount < 0) {
         fuel = 0;
-    }
-
-    else {
+    } else {
         fuel -= amount;
     }
 }
 
-// Setter to add fuel
-void Player::add_fuel(int amount){
+void Player::add_fuel(int amount) {
     fuel += amount;
 }
 
-// Setter to deduct quantity of an item
-void Player::remove_item(int idx, int amount){
-    if (inventory[idx] - amount < 0){
+void Player::remove_item(int idx, int amount) {
+    if (inventory[idx] - amount < 0) {
         inventory[idx] = 0;
-    }
-
-    else {
+    } else {
         inventory[idx] -= amount;
     }
-
 }
 
-// Setter to increase quantity of an item
-void Player::add_item(int idx, int amount){
+void Player::add_item(int idx, int amount) {
     inventory[idx] += amount;
 }
 
-// Setter to change status of ship (owned/not owned)
-void Player::unlock_ship(std::string name){
-    ship_registry[name] = true; 
+void Player::unlock_ship(std::string name) {
+    ship_registry[name] = true;
 }
 
-// Procedure showing player's resource quantity (credits, fuel, iron, water)
+void Player::set_ship_owned(std::string name, bool owned) {
+    ship_registry[name] = owned;
+}
+
+void Player::set_name(std::string name) {
+    this->name = name;
+}
+
+void Player::set_credits(int amount) {
+    credits = amount;
+}
+
+void Player::set_fuel(int amount) {
+    fuel = amount;
+}
+
+void Player::set_item(int idx, int amount) {
+    inventory[idx] = amount;
+}
+
 void Player::display_stats() const {
     std::cout << "\n=== " << name << "'s Status ===" << std::endl;
     std::cout << "Credits: " << credits << " Star Coins" << std::endl;
